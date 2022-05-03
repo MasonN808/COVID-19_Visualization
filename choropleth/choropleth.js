@@ -301,7 +301,8 @@
             pairRateWithId[d.id] = +d.rate;
             pairNameWithId[d.id] = d.name;
             });
-
+        // CONTINUE HERE 5/3/2022
+        // TODO: FIX THIS
 		svg.append("g")
 		 .attr("class", "county")
 		 .selectAll("path")
