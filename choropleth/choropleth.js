@@ -297,8 +297,9 @@
 
         console.log(us.objects.counties) //Debugging
 		data.forEach(function(d) {
-            pairRateWithId[d.id] = +d.rate;
-            pairNameWithId[d.id] = d.name;
+            pairRateWithId[d.fips_code] = +d.percent_test_results_reported_positive_last_7_days; //TODO: change d.id to whatever it is in data.csv
+            pairNameWithId[d.fips_code] = d.county_name;
+            // console.log(d.fips_code) //Debugging
             });
         // CONTINUE HERE 5/3/2022
 		svg.append("g")
@@ -308,20 +309,19 @@
 		 .enter().append("path")
 		 .attr("d", path)
 		 .style ( "fill" , function (d) {
-		 return color (pairRateWithId[d.id]);
-		 })
+		    return color (pairRateWithId[d.fips_code]);
+		    })
 		 .style("opacity", 0.8)
 		 .on("mouseover", function(d) {
 		 	var sel = d3.select(this);
-  		sel.moveToFront();
-        
-		d3.select(this).transition().duration(300).style({'opacity': 1, 'stroke': 'black', 'stroke-width': 1.5});
+  		    sel.moveToFront();
+            d3.select(this).transition().duration(300).style({'opacity': 1, 'stroke': 'black', 'stroke-width': 1.5});
 
-		div.transition().duration(300)
-		 .style("opacity", 1)
-		 div.text(pairNameWithId[d.id] + ": " + pairRateWithId[d.id])
-		 .style("left", (d3.event.pageX) + "px")
-		 .style("top", (d3.event.pageY -30) + "px");
+            div.transition().duration(300)
+		        .style("opacity", 1)
+		        div.text(pairNameWithId[d.fips_code] + ": " + pairRateWithId[d.fips_code])
+		        .style("left", (d3.event.pageX) + "px")
+		        .style("top", (d3.event.pageY -30) + "px");
 		 })
 		 .on("mouseout", function() {
 		 	var sel = d3.select(this);
