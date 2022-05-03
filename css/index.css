@@ -41,8 +41,8 @@ p {
    margin: 20px 0 0 10px;
 }
 
-@media (max-width: 400px) {
+/* @media (max-width: 400px) {
 .d3map {
    display: none;
 }
-}
+} */

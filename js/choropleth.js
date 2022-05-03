@@ -326,11 +326,11 @@
 		 .on("mouseout", function() {
 		 	var sel = d3.select(this);
   			sel.moveToBack();
-		 d3.select(this)
-		 .transition().duration(300)
-		 .style({'opacity': 0.8, 'stroke': 'white', 'stroke-width': 1});
-		 div.transition().duration(300)
-		 .style("opacity", 0);
+            d3.select(this)
+            .transition().duration(300)
+            .style({'opacity': 0.8, 'stroke': 'white', 'stroke-width': 1});
+            div.transition().duration(300)
+            .style("opacity", 0);
 		 })
 	};
 		 
@@ -354,7 +354,7 @@
         .attr("y", 590)
         .text(function(d, i){ return legend_labels[i]; });
 
-    var legend_title = "Number of independent farms";
+    var legend_title = "Number of Covid Cases";
 
     svg.append("text")
         .attr("x", 10)
