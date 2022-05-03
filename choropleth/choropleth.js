@@ -267,7 +267,7 @@
     var path = d3.geo.path()
         
     queue()
-        .defer(d3.json, "us.json")
+        .defer(d3.json, "counties-10m.json")
         .defer(d3.csv, "data.csv")
         .await(ready);
         
@@ -295,18 +295,16 @@
     		}); 
 		};
 
-        // let us = require("./us.json");
-        console.log(us.features.properties) //Debugging
+        console.log(us.objects.counties) //Debugging
 		data.forEach(function(d) {
             pairRateWithId[d.id] = +d.rate;
             pairNameWithId[d.id] = d.name;
             });
         // CONTINUE HERE 5/3/2022
-        // TODO: FIX THIS
 		svg.append("g")
 		 .attr("class", "county")
 		 .selectAll("path")
-		 .data(topojson.feature(us, us.features.properties).features)
+		 .data(topojson.feature(us, us.objects.counties).features)
 		 .enter().append("path")
 		 .attr("d", path)
 		 .style ( "fill" , function (d) {
@@ -356,9 +354,9 @@
         .attr("y", 590)
         .text(function(d, i){ return legend_labels[i]; });
 
-        var legend_title = "Number of independent farms";
+    var legend_title = "Number of independent farms";
 
-        svg.append("text")
+    svg.append("text")
         .attr("x", 10)
         .attr("y", 540)
         .attr("class", "legend_title")
