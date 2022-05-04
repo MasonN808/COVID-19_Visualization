@@ -18,14 +18,14 @@
 	<h1>A Visualization of the COVID-19 Pandemic</h1>
 	<section>
 		<h2>Aggregated Choropleth Map of US Counties from 2021-Present</h2>
-		<p>In this demo we examine a data set from the 2003 National Assesssment of Adult Literacy. We were curious about adult literacy rates in our home state of New York, and decided to approach this by looking at the <em>prose literacy</em> rate across New York counties. We decided to include only the proportion of adults with <em>Below Basic</em> level prose literacy, and chose a color palette that highlights those counties with the highest illiteracy rates. Clicking on the chart will bring up additional details, which are updated as you hover over each county. Finally, you can switch to an alternate color palette that conveys for each county how it fares relative to the national prose illiteracy rate.</p>
+		<p>Here, we visualize the aggregated number of positive COVID-19 cases from 1/26/2020 to 4/25/2022 by US county.  </p>
 		<figure id = "choroplethMap"></figure>
 		<h3>Data Sources</h3>
 		<ul>
 		<li><cite><a href="https://nces.ed.gov/naal/estimates/StateEstimates.aspx">National Center for Education Statistics - State Estimates</a></cite></li>
 		</ul>
 		<script type="text/javascript">	
-			var width = 960,
+			var width = 1100,
 				height = 600;
 
 			var color_domain = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
@@ -167,12 +167,12 @@
 					return colorScale(d);
 				})
 				.style("opacity", 0.8)
-				.attr("transform","translate(1250, -600)rotate(90)"); // found these brutally
+				.attr("transform","translate(1250, -750)rotate(90)"); // found these brutally
 				
 			legend.append("text")
-				.attr("x", width - 80)
+				.attr("x", width - 145)
 				.attr("y", function(d, i){
-					return height - (i*ls_h) - ls_h - 224;
+					return height - (i*ls_h) - ls_h - 245;
 				})
 				.text(function(d, i){
 					return legend_labels[i];
