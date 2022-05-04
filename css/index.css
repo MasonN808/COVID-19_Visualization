@@ -7,6 +7,16 @@ body {
     font-family: 'Proxima Nova', sans-serif;
 }
 
+.stripe-1 {
+    color: white;
+    background: repeating-linear-gradient(
+      45deg,
+      #606dbc,
+      #606dbc 10px,
+      #465298 10px,
+      #465298 20px
+    );
+  }
 .county {
     font: 14px sans-serif;
     font-weight: bold;
