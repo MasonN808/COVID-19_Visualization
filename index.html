@@ -28,16 +28,17 @@
 			var width = 960,
 				height = 600;
 
-			var color_domain = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+			var color_domain = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
 
-			var ext_color_domain = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+			var ext_color_domain = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
 
-			var legend_labels = ["> 1000", '2000', '3000', '4000', '5000', '6000', '7000', '8000+'];
+			var legend_labels = ["> 1000", '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000+'];
 			// var legend_labels = ["< 500", "500+", "1000+", "1500+", "2000+", "2500+", "3000+", "3500+", "4000+", "4500+", "5000+", "5500+", "6000+"];
 
 			var colorScale = d3.scale.threshold()
 				.domain(color_domain)
-				.range(['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#990000']);
+				// .range(['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#990000']);
+				.range(['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#b30000', '#7f0000']);
 				
 			var div = d3.select("#choroplethMap").append("div")
 				.attr("class", "tooltip")
@@ -143,38 +144,41 @@
 					div.transition().duration(300)
 					.style("opacity", 0);
 				});
-				console.log("pairratewithid2", pairRateWithId)
-				// console.log(topojson.feature(us, us.objects.counties).features);
-				//  svg.append("path")
-				//  .datum(topojson.mesh(us, us.objects.counties, function(a, b) { return a.id / 1000 ^ b.id / 1000; }))
-				//  .attr("class", "state-borders")
-				//  .attr("d", path);
+				// console.log("pairratewithid2", pairRateWithId)
 			};
-			// const indexes = 1-ext_color_domain.length
-			// ext_color_domain[indexes] = ext_color_domain[indexes]/2
-			// for(var i = 1, length = ext_color_domain.length; i < length; i++){
-			// 	ext_color_domain[i] /= 2;  // `a[i].x /= d` is shorthand for `a[i].x = a[i].x / d`
-			// }
-			console.log(ext_color_domain)
+			
 			var legend = svg.selectAll("g.legend")
 				.data(ext_color_domain)
 				.enter().append("g")
 				.attr("class", "legend");
-				
-			var ls_w = 73, ls_h = 20;
+			
+			// ls_w ---> how wide the legend elements/bars are
+			// ls_h ---> how tall the legend elements/bars are
+			var ls_w = 20, ls_h = 20;
 				
 			legend.append("rect")
-				.attr("x", function(d, i){ return width - (i*ls_w) - ls_w;})
-				.attr("y", 550)
+				.attr("x", function(d, i){
+					return width - (i*ls_w) - ls_w;
+				})
+				.attr("y", height/2)
 				.attr("width", ls_w)
 				.attr("height", ls_h)
-				.style("fill", function(d, i) { return colorScale(d); })
-				.style("opacity", 0.8);
+				.style("fill", function(d, i){
+					return colorScale(d);
+				})
+				.style("opacity", 0.8)
+				.attr("transform","translate(1250, -600)rotate(90)"); // found these brutally
 				
 			legend.append("text")
-				.attr("x", function(d, i){ return width - (i*ls_w) - ls_w;})
-				.attr("y", 590)
-				.text(function(d, i){ return legend_labels[i]; });
+				.attr("x", width - 80)
+				.attr("y", function(d, i){
+					return height - (i*ls_h) - ls_h - 224;
+				})
+				.text(function(d, i){
+					return legend_labels[i];
+				})
+				// .attr("transform","translate(1250, -600)rotate(90)");
+			
 
 			var legend_title = "Number of Covid Cases";
 
@@ -182,7 +186,8 @@
 				.attr("x", 10)
 				.attr("y", 540)
 				.attr("class", "legend_title")
-				.text(function(){return legend_title});
+				.text(function(){return legend_title})
+				.attr("transform","translate(850, -390)");
 
 			queue()
 			.defer(d3.json, "counties-10m.json")
