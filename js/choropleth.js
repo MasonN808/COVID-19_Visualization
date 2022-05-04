@@ -246,15 +246,20 @@
 // }
 
     // Citation: http://bl.ocks.org/jadiehm/af4a00140c213dfbc4e6#license
+    // d3.select('#choropleth').remove;
 
-    var width = 960, height = 600;
-    var color_domain = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
-    var ext_color_domain = [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
-    var legend_labels = ["< 500", "500+", "1000+", "1500+", "2000+", "2500+", "3000+", "3500+", "4000+", "4500+", "5000+", "5500+", "6000+"]
+    var width = 960,
+        height = 600;
+
+    var color_domain = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000];
+
+    var ext_color_domain = [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000];
+
+    var legend_labels = ["< 500", "500+", "1000+", "1500+", "2000+", "2500+", "3000+", "3500+", "4000+", "4500+", "5000+", "5500+", "6000+"];
+
     var color = d3.scale.threshold()
-    
-    .domain(color_domain)
-    .range(["#dcdcdc", "#d0d6cd", "#bdc9be", "#aabdaf", "#97b0a0", "#84a491", "#719782", "#5e8b73", "#4b7e64", "#387255", "#256546", "#125937", "#004d28"]);
+        .domain(color_domain)
+        .range(["#dcdcdc", "#d0d6cd", "#bdc9be", "#aabdaf", "#97b0a0", "#84a491", "#719782", "#5e8b73", "#4b7e64", "#387255", "#256546", "#125937", "#004d28"]);
         
     var div = d3.select("#choropleth").append("div")
         .attr("class", "tooltip")
@@ -264,7 +269,8 @@
         .attr("width", width)
         .attr("height", height)
         .style("margin", "-15px auto");
-    var path = d3.geo.path()
+
+    var path = d3.geo.path().projection(null);
         
     queue()
         .defer(d3.json, "counties-10m.json")
@@ -273,6 +279,7 @@
         
     function ready(error, us, data) {
          if (error) throw error;
+         
 		 var pairRateWithId = {};
 		 var pairNameWithId = {};
         //  us = usdata;
@@ -301,6 +308,13 @@
             pairNameWithId[d.fips_code] = d.county_name;
             // console.log(d.fips_code) //Debugging
             });
+
+        // Debugging
+        // data.forEach(function(d) {
+        //     console.log(d.fips_code)
+        // });
+        console.log(pairRateWithId[01045])
+
         // CONTINUE HERE 5/3/2022
 		svg.append("g")
 		 .attr("class", "county")
@@ -331,7 +345,12 @@
             .style({'opacity': 0.8, 'stroke': 'white', 'stroke-width': 1});
             div.transition().duration(300)
             .style("opacity", 0);
-		 })
+		 });
+         console.log(topojson.feature(us, us.objects.counties).features);
+        //  svg.append("path")
+        //  .datum(topojson.mesh(us, us.objects.counties, function(a, b) { return a.id / 1000 ^ b.id / 1000; }))
+        //  .attr("class", "state-borders")
+        //  .attr("d", path);
 	};
 		 
     var legend = svg.selectAll("g.legend")
