@@ -1,27 +1,29 @@
-function buildBarchart(data){
+function buildBarchart(error, data){
+    if (error) throw error;
     // set up some basic constants
     const width = 600, height = 800, wpad = 40, bpad = 20, tpad = 20;
 
-    const barchart = d3.select("figure") //where to put it
+    const barchart = d3.select("#barChart") //where to put it
         .append("svg")
         .attr("viewBox", "0 140 " + width + " " + height);
     
     // set up our x and y vaiables
     const xValue = d => d.county_name;
     const yValue = d => d.percent_test_results_reported_positive_last_7_days;
+    console.log(data);
 
     // a scale maps data values in some input range to (pixel) values in some output range
     
     // remove the first element in data since its 0
-    data.shift();
+    // data.shift();
     console.log(data.map(xValue));
-    const xScale = d3.scaleBand()
+    const xScale = d3v4.scaleBand()
         .domain(data.map(xValue)) // transform data items to just their Rotor_Diameter
         .range([wpad, width - wpad])
         .paddingInner(0.25)
         .paddingOuter(0.5);
 
-    const yScale = d3.scaleLinear()
+    const yScale = d3v4.scaleLinear()
         .domain([0, d3.max(data.map(yValue))]).nice() // transform data items to just their Rotor_Diameter // .nice() makes the domain end on nice index
         .range([height - bpad, tpad]);
 
@@ -69,9 +71,10 @@ function buildBarchart(data){
 
     barchart.on("dblclick", sortBars); // attach the even listener
 
-    let sortCol = "Billionaires"; // define the initial column by which to sort
+    // let sortCol = "Billionaires"; // define the initial column by which to sort
 
-    function sortBars() {
-        //TODO figure out how ot actually sort the bars
-    }
+    // function sortBars() {
+    //     //TODO figure out how ot actually sort the bars
+    // }
+    
 }

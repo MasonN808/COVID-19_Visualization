@@ -304,8 +304,8 @@
             .text(function(){return legend_title})
             .attr("transform","translate(850, -390)");
 
-        queue()
-        .defer(d3.json, "counties-10m.json")
-        .defer(d3.csv, "data.csv")
+    queue()
+        .defer(d3.json, "data/counties-10m.json")
+        .defer(d3.csv, "data/data.csv")
         .await(ready);
     }
