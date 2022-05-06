@@ -7,7 +7,7 @@
 	<script src="lib/d3.js"></script> <!-- For different verison of d3 -->
 	<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
 	<script type="text/javascript" src="https://d3js.org/topojson.v1.min.js"></script>
-	<script type="text/javascript" src="js/barchart.js"></script>
+	<script type="text/javascript" src="js/barChart.js"></script>
 	<script type="text/javascript" src="js/choropleth.js"></script>
 
 
@@ -18,7 +18,7 @@
 
 	<script>
 		window.onload = async function(){
-		//   const rawData = d3.csv("data.csv"); //inject dataset
+		//   var rawData = d3.csv("data/data.csv"); //inject dataset
 
 		//   const data = transformData(rawData); //mapping out steps to perform
 		//   buildTable(data); //build data from raw data
@@ -30,9 +30,14 @@
 		  makeChoropleth();
 		//   buildBarchart(rawData); //build scatterplot from transformed data
 		//   buildGroupedBars(billionairesCounts)
-		queue()
-        	.defer(d3.csv, "data/data.csv")
-        	.await(buildBarchart);
+		// queue()
+        // 	.defer(d3.csv, "data/data.csv")
+        // 	.await(buildBarchart);
+
+
+		  generateBarChart();
+
+		// d3.csv("data/data.csv").get(makeBarChart(data));
 		//   const companiesPerYear = newBillionaireCompaniesPerYear(data);
 		//   buildLineChart(companiesPerYear);
 		}
@@ -58,7 +63,7 @@
 <section>
     <h2>Bar Chart</h2>
     <figure id = "barChart"></figure>
-  </section>
+</section>
 
 <p>Source: U.S. Census</p>		
 </body>
