@@ -51,15 +51,17 @@
 
             // console.log(us.objects.counties) //Debugging
             data.forEach(function(d) {
-                if (pairRateWithId[d.fips_code] === undefined) { // add another condidtion stating that this is the first iteration
+                
+                // console.log(d.cases_per_100K_7_day_count_change)
+                if (pairRateWithId[d.fips_code] === undefined |pairRateWithId[d.fips_code] === NaN) { // add another condidtion stating that this is the first iteration
                     pairRateWithId[d.fips_code] = 0 // This makes sure NaNs arent produced using += newCases
                 }
-                if (d.percent_test_results_reported_positive_last_7_days === undefined) {
+                if (d.cases_per_100K_7_day_count_change === undefined | d.cases_per_100K_7_day_count_change === 'suppressed' | d.cases_per_100K_7_day_count_change ===  NaN) {
                     newCases = 0
-                    console.log(d.fips_code)
                 }
                 else {
-                    newCases = +d.percent_test_results_reported_positive_last_7_days
+                    newCases = +d.cases_per_100K_7_day_count_change
+                    // console.log(d.cases_per_100K_7_day_count_change)
                 }
                 pairRateWithId[d.fips_code] += newCases; //TODO: change d.id to whatever it is in data.csv
                 pairNameWithId[d.fips_code] = d.county_name;
@@ -67,7 +69,12 @@
                     console.error("ERROR: found undefined at", d.fips_code)
                 }
                 // console.log(d.fips_code) //Debugging
-                })
+            });
+            data.forEach(function(d) {
+                if (pairRateWithId[d.fips_code] === NaN | pairRateWithId[d.fips_code] === undefined){
+                    console.log(bad)
+                }
+            });
 
             // Debugging
             // data.forEach(function(d) {
@@ -76,7 +83,7 @@
             // 	// 	console.error("ERROR: found undefined at", d.fips_code)
             // 	// }
             // });
-            console.log("pairratewithid1", pairRateWithId[10001]);
+            console.log("pairratewithid1", pairRateWithId);
 
             svg.append("g")
             .attr("class", "county")
