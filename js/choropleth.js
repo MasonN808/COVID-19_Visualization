@@ -2,11 +2,15 @@
         var width = 1100,
             height = 600;
 
-        var color_domain = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
+        // var color_domain = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
+        var color_domain = [.2, .3, .4, .5, .6, .7, .8, .9];
 
-        var ext_color_domain = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
 
-        var legend_labels = ["> 1000", '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000+'];
+        // var ext_color_domain = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000];
+        var ext_color_domain = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
+
+
+        var legend_labels = ["> .1", '.2', '.3', '.4', '.5', '.6', '.7', '.8', '.9+'];
         // var legend_labels = ["< 500", "500+", "1000+", "1500+", "2000+", "2500+", "3000+", "3500+", "4000+", "4500+", "5000+", "5500+", "6000+"];
 
         var colorScale = d3.scale.threshold()
@@ -52,39 +56,60 @@
             var dates1 = {};
             var dates2 = {};
             data.forEach(function(d) {
-                if (dates1[parseInt(d.fips_code)] == undefined || isNaN(dates1[parseInt(d.fips_code)])){
-                    dates1[parseInt(d.fips_code)] = new Date(d.date)
-                }
-                else if (dates2[parseInt(d.fips_code)] == undefined || isNaN(dates2[parseInt(d.fips_code)]) || dates2[parseInt(d.fips_code)] == ""){
-                    dates2[parseInt(d.fips_code)] = new Date(d.date)
-                    const diffTime = Math.abs(dates1[parseInt(d.fips_code)] - dates2[parseInt(d.fips_code)]);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    if (diffDays >= 7){ // This is to prevent overlaps in the data which overcounts however this may under count the data sicne the data isn't consistant
-                        if (pairRateWithId[parseInt(d.fips_code)] === undefined || isNaN(pairRateWithId[parseInt(d.fips_code)])) { // add another condidtion stating that this is the first iteration
-                            pairRateWithId[parseInt(d.fips_code)] = 0 // This makes sure NaNs arent produced using += newCases
-                        }
-                        if (d.cases_per_100K_7_day_count_change === undefined || d.cases_per_100K_7_day_count_change === '' || d.cases_per_100K_7_day_count_change == 'suppressed' || isNaN(d.cases_per_100K_7_day_count_change)) {
-                            newCases = 0
+                var date = new Date(d.date)
+                // if (isNaN(date)){
+                //     console.log(d.date)
+                // }
+             
+                if (!isNaN(date) || !date === undefined){
+                    if (dates1[parseInt(d.fips_code)] == undefined || isNaN(dates1[parseInt(d.fips_code)])){
+                        dates1[parseInt(d.fips_code)] = date
+                         if (pairRateWithId[parseInt(d.fips_code)] === undefined || isNaN(pairRateWithId[parseInt(d.fips_code)])) { // add another condidtion stating that this is the first iteration
+                                pairRateWithId[parseInt(d.fips_code)] = 0 // This makes sure NaNs arent produced using += newCases
+                            }
+                            if (d.cases_per_100K_7_day_count_change === undefined || d.cases_per_100K_7_day_count_change === '' || d.cases_per_100K_7_day_count_change == 'suppressed' || isNaN(d.cases_per_100K_7_day_count_change)) {
+                                newCases = 0
+                            }
+                            else {
+                                newCases = +d.cases_per_100K_7_day_count_change
+                            }
+                            pairRateWithId[parseInt(d.fips_code)] += newCases;
+                            pairNameWithId[parseInt(d.fips_code)] = d.county_name;
+                    }
+                    else if (dates2[parseInt(d.fips_code)] == undefined || isNaN(dates2[parseInt(d.fips_code)]) || dates2[parseInt(d.fips_code)] == ""){
+                        dates2[parseInt(d.fips_code)] = date
+                        const diffTime = Math.abs(dates1[parseInt(d.fips_code)] - dates2[parseInt(d.fips_code)]);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays >= 7){ // This is to prevent overlaps in the data which overcounts however this may under count the data sicne the data isn't consistant
+                            // if (d.fips_code === '12086'){
+                            //     console.log(d.date, d.cases_per_100K_7_day_count_change)
+                            // }
+                            if (pairRateWithId[parseInt(d.fips_code)] === undefined || isNaN(pairRateWithId[parseInt(d.fips_code)])) { // add another condidtion stating that this is the first iteration
+                                pairRateWithId[parseInt(d.fips_code)] = 0 // This makes sure NaNs arent produced using += newCases
+                            }
+                            if (d.cases_per_100K_7_day_count_change === undefined || d.cases_per_100K_7_day_count_change === '' || d.cases_per_100K_7_day_count_change == 'suppressed' || isNaN(d.cases_per_100K_7_day_count_change)) {
+                                newCases = 0
+                            }
+                            else {
+                                newCases = +d.cases_per_100K_7_day_count_change
+                            }
+                            pairRateWithId[parseInt(d.fips_code)] += newCases;
+                            pairNameWithId[parseInt(d.fips_code)] = d.county_name;
+    
+                            // Move the date from date2 to date1 (could implemnt a linked stack to an array)
+                            dates1[parseInt(d.fips_code)] = dates2[parseInt(d.fips_code)]
+                            // Pop the dates2 data
+                            dates2[parseInt(d.fips_code)] = ""
                         }
                         else {
-                            newCases = +d.cases_per_100K_7_day_count_change
+                            // go to next date
+                            dates2[parseInt(d.fips_code)] = ""
                         }
-                        pairRateWithId[parseInt(d.fips_code)] += newCases;
-                        pairNameWithId[parseInt(d.fips_code)] = d.county_name;
-
-                        // Move the date from date2 to date1 (could implemnt a linked stack to an array)
-                        dates1[parseInt(d.fips_code)] = dates2[parseInt(d.fips_code)]
-                        // Pop the dates2 data
-                        dates2[parseInt(d.fips_code)] = ""
                     }
                     else {
-                        // go to next date
                         dates2[parseInt(d.fips_code)] = ""
                     }
-                }
-                // console.log(d)
-                // console.log(index)
-                
+                } 
             });
 
             // pairRateWithId.forEach(function(i) {
@@ -116,7 +141,7 @@
             .attr("d", path)
             .style ( "fill" , function(d) {
                 // d is the element in the us.json file so we use id to identify fips code
-                d.total = pairRateWithId[d.id] || -1;
+                d.total = pairRateWithId[parseInt(d.id)] || -1;
                 return colorScale(d.total);
             })
             .style("opacity", 0.8)
@@ -128,13 +153,13 @@
                 div.transition().duration(300)
                     .style("opacity", 1)
                     // console.log("pairratewithid1", pairRateWithId);
-                    if (pairRateWithId[d.id] === undefined){
+                    if (pairRateWithId[parseInt(d.id)] === undefined){
                         numCases = "N/A"
                     }
                     else {
-                        numCases = pairRateWithId[d.id]
+                        numCases = pairRateWithId[parseInt(d.id)]
                     }
-                    div.text(pairNameWithId[d.id] + ": " + numCases.toFixed(4))
+                    div.text(pairNameWithId[parseInt(d.id)] + ": " + numCases.toFixed(4))
 
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY -30) + "px");
@@ -184,7 +209,7 @@
             // .attr("transform","translate(1250, -600)rotate(90)");
         
 
-        var legend_title = "Number of Covid Cases";
+        var legend_title = "Percent of County Population";
 
         svg.append("text")
             .attr("x", 10)
