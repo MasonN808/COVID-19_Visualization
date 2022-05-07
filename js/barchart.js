@@ -1,106 +1,107 @@
-function generateBarChart(){
-    const width = 600, height = 800, wpad = 40, bpad = 20, tpad = 20;
+// function generateBarChart(){
+//     const width = 600, height = 800, wpad = 40, bpad = 20, tpad = 20;
 
-    const barchart = d3.select("#barChart") //where to put it
-        .append("svg")
-        .attr("viewBox", "0 140 " + width + " " + height);
-        // .attr("width", width)
-        // .attr("height", height)
-        // .style("margin", "-15px auto");
+//     const barchart = d3.select("#barChart") //where to put it
+//         .append("svg")
+//         .attr("viewBox", "0 140 " + width + " " + height);
+//         // .attr("width", width)
+//         // .attr("height", height)
+//         // .style("margin", "-15px auto");
         
-    function makeBarChart(error, data){
-        // const data = d3.csv("data.csv"); //inject dataset
+//     d3.csv("data/data.csv", function(error, data) {
+//         if (error) throw error;
 
-        if (error) throw error;
-        // set up some basic constants
+//         // const data = d3.csv("data.csv"); //inject dataset
+
+//         // set up some basic constants
         
-        // set up our x and y vaiables
-        const xValue = d => d.county_name;
-        const yValue = d => d.percent_test_results_reported_positive_last_7_days;
-        console.log(data);
+//         // set up our x and y vaiables
+//         const xValue = d => d.county_name;
+//         const yValue = d => d.percent_test_results_reported_positive_last_7_days;
+//         console.log(data);
 
-        // a scale maps data values in some input range to (pixel) values in some output range
+//         // a scale maps data values in some input range to (pixel) values in some output range
 
-        console.log(data.map(xValue));
-        const xScale = d3v4.scaleBand()
-            .domain(data.map(xValue)) // transform data items to just their Rotor_Diameter
-            .range([wpad, width - wpad])
-            .paddingInner(0.25)
-            .paddingOuter(0.5);
+//         console.log(data.map(xValue));
+//         const xScale = d3v4.scaleBand()
+//             .domain(data.map(xValue)) // transform data items to just their Rotor_Diameter
+//             .range([wpad, width - wpad])
+//             .paddingInner(0.25)
+//             .paddingOuter(0.5);
 
-        const yScale = d3v4.scaleLinear()
-            .domain([0, d3.max(data.map(yValue))]).nice() // transform data items to just their Rotor_Diameter // .nice() makes the domain end on nice index
-            .range([height - bpad, tpad]);
+//         const yScale = d3v4.scaleLinear()
+//             .domain([0, d3.max(data.map(yValue))]).nice() // transform data items to just their Rotor_Diameter // .nice() makes the domain end on nice index
+//             .range([height - bpad, tpad]);
 
-        const bars = barchart.selectAll("g")
-            .data(data)
-            .enter()
-            .append("g")
-            .attr("class", "bar")
-            .attr("transform", d => "translate(" + xScale(xValue(d)) + "," + yScale(yValue(d)) + ")" );
+//         const bars = barchart.selectAll("g")
+//             .data(data)
+//             .enter()
+//             .append("g")
+//             .attr("class", "bar")
+//             .attr("transform", d => "translate(" + xScale(xValue(d)) + "," + yScale(yValue(d)) + ")" );
 
-        bars.append("rect")
-            .attr("height", d => yScale.range()[0] - yScale(yValue(d)))
-            .attr("width", xScale.bandwidth())
-            //.attr("x", d => xScale(xValue(d)))
-            //.attr("y", d => yScale(yValue(d)))
-            .attr("fill", "cornflowerblue");
+//         bars.append("rect")
+//             .attr("height", d => yScale.range()[0] - yScale(yValue(d)))
+//             .attr("width", xScale.bandwidth())
+//             //.attr("x", d => xScale(xValue(d)))
+//             //.attr("y", d => yScale(yValue(d)))
+//             .attr("fill", "cornflowerblue");
 
-        bars.append("text")
-            .text(d => yValue(d))
-            .attr("dx", "0.4em")
-            .attr("dy", "0.6em")
-            .attr("transform", "rotate(-90)");
+//         bars.append("text")
+//             .text(d => yValue(d))
+//             .attr("dx", "0.4em")
+//             .attr("dy", "0.6em")
+//             .attr("transform", "rotate(-90)");
 
-        const xAxis = barchart.append("g")
-            .attr("transform", "translate(0, " + (height - bpad) + ")") //translate(40,0)
-            .call(d3.axisBottom().scale(xScale))
-            .selectAll("text")
-            .style("text-anchor", "end") //change anchor position of text
-            .attr("dx", "-0.8em")
-            .attr("dy", "-0.6em")
-            .attr("transform", "rotate(-90)"); //rotate the xaxis text
+//         const xAxis = barchart.append("g")
+//             .attr("transform", "translate(0, " + (height - bpad) + ")") //translate(40,0)
+//             .call(d3.axisBottom().scale(xScale))
+//             .selectAll("text")
+//             .style("text-anchor", "end") //change anchor position of text
+//             .attr("dx", "-0.8em")
+//             .attr("dy", "-0.6em")
+//             .attr("transform", "rotate(-90)"); //rotate the xaxis text
 
-        const yAxis = barchart.append("g")
-            .attr("transform", "translate(" + wpad + ", 0)") //translate(40,0)
-            .call(d3.axisLeft().scale(yScale));
-        // const margin = 20;
-        // barchart.append("g")
-        //     .attr("transform", "translate(" + margin + "," + (height+margin) + ")")
-        //     .attr("class","axis")
-        //     .call(xAxis);
+//         const yAxis = barchart.append("g")
+//             .attr("transform", "translate(" + wpad + ", 0)") //translate(40,0)
+//             .call(d3.axisLeft().scale(yScale));
+//         // const margin = 20;
+//         // barchart.append("g")
+//         //     .attr("transform", "translate(" + margin + "," + (height+margin) + ")")
+//         //     .attr("class","axis")
+//         //     .call(xAxis);
             
-        // barchart.append("g")
-        //     .attr("transform", "translate(" + margin + "," + margin + ")")
-        //     .attr("class","axis")
-        //     .call(yAxis);
+//         // barchart.append("g")
+//         //     .attr("transform", "translate(" + margin + "," + margin + ")")
+//         //     .attr("class","axis")
+//         //     .call(yAxis);
 
 
-        d3.select("figure")
-            .append("figcaption")
-            .text("Ranking vs Age of Richest")
+//         d3.select("figure")
+//             .append("figcaption")
+//             .text("Ranking vs Age of Richest")
 
-        // Event handling for interactivity
-        // bars.on("click", (evt) => {
-        //     const bar = d3.select(evt.target.parentNode);
-        //     bar.classed("selected", !bar.classed("selected"));
-        // });
+//         // Event handling for interactivity
+//         // bars.on("click", (evt) => {
+//         //     const bar = d3.select(evt.target.parentNode);
+//         //     bar.classed("selected", !bar.classed("selected"));
+//         // });
 
-        // barchart.on("dblclick", sortBars); // attach the even listener
+//         // barchart.on("dblclick", sortBars); // attach the even listener
 
-        // let sortCol = "Billionaires"; // define the initial column by which to sort
+//         // let sortCol = "Billionaires"; // define the initial column by which to sort
 
-        // function sortBars() {
-        //     //TODO figure out how ot actually sort the bars
-        // }
-    }
-    queue()
-    // console.log(1)
-    .defer(d3.csv, "data/data.csv")
-    // console.log(2)
-    .await(makeBarChart);
-    // console.log(3)
-}
+//         // function sortBars() {
+//         //     //TODO figure out how ot actually sort the bars
+//         // }
+//     })
+//     // queue()
+//     // // console.log(1)
+//     // .defer(d3.csv, "data/data.csv")
+//     // // console.log(2)
+//     // .await(makeBarChart);
+//     // // console.log(3)
+// }
 
 // function makeBarChart(){
 //     var svg = d3.select("svg"),
@@ -169,3 +170,57 @@ function generateBarChart(){
 //         .attr('transform', `translate(0, ${height})`)
 //         .call(d3.axisBottom(xScale));
 // }
+
+function makeBarChart(){
+    
+    // Set graph margins and dimensions
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+    // Set ranges
+    var x = d3v7.scaleBand()
+        .range([0, width])
+        .padding(0.1);
+    var y = d3v7.scaleLinear()
+        .range([height, 0]);
+    var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", 
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get data
+    d3.csv("data/data.csv").then(function(data) {
+
+    // Format data
+    data.forEach(function(d) {
+        d.amounts = +d.amounts;
+    });
+
+    // Scale the range of the data in the domains
+    x.domain(data.map(function(d) { return d.name; }));
+    y.domain([0, d3.max(data, function(d) { return d.amounts; })]);
+
+    // Append rectangles for bar chart
+    svg.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", function(d) { return x(d.name); })
+    .attr("width", x.bandwidth())
+    .attr("y", function(d) { return y(d.amounts); })
+    .attr("height", function(d) { return height - y(d.amounts); });
+
+    // Add x axis
+    svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+    // Add y axis
+    svg.append("g")
+    .call(d3.axisLeft(y));
+
+    });
+}

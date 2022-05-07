@@ -123,7 +123,7 @@
             // })
 
 
-            console.log(pairRateWithId)
+            // console.log(pairRateWithId)
 
             // Debugging
             // data.forEach(function(d) {
