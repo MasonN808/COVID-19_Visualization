@@ -50,31 +50,80 @@
             };
 
             // console.log(us.objects.counties) //Debugging
+            var index = 0;
+            var dates1 = {};
+            var dates2 = {};
             data.forEach(function(d) {
+                if (dates1[parseInt(d.fips_code)] == undefined || isNaN(dates1[parseInt(d.fips_code)])){
+                    dates1[parseInt(d.fips_code)] = new Date(d.date)
+                }
+                else if (dates2[parseInt(d.fips_code)] == undefined || isNaN(dates2[parseInt(d.fips_code)]) || dates2[parseInt(d.fips_code)] == ""){
+                    dates2[parseInt(d.fips_code)] = new Date(d.date)
+                    const diffTime = Math.abs(dates1[parseInt(d.fips_code)] - dates2[parseInt(d.fips_code)]);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays >= 7){ // This is to prevent overlaps in the data which overcounts however this may under count the data sicne the data isn't consistant
+                        if (d.fips_code === '36089'){
+                            index += 1
+                            // const date1 = new Date('7/13/2010');
+                            // const date2 = new Date('12/15/2010');
+                            // const diffTime = Math.abs(date2 - date1);
+                            // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                            // console.log(diffTime + " milliseconds");
+                            // console.log(diffDays + " days");
+                            // console.log(d.date, d.cases_per_100K_7_day_count_change)
+                        }
+                        // console.log(pairRateWithId)
+                        // if (pairRateWithId[d.fips_code] === d.cases_per_100K_7_day_count_change)
+                        // console.log(d.cases_per_100K_7_day_count_change)
+                        if (pairRateWithId[parseInt(d.fips_code)] === undefined || isNaN(pairRateWithId[parseInt(d.fips_code)])) { // add another condidtion stating that this is the first iteration
+                            pairRateWithId[parseInt(d.fips_code)] = 0 // This makes sure NaNs arent produced using += newCases
+                        }
+                        else{
+                            // console.log(pairRateWithId[d.fips_code])
+                        }
+                        if (d.cases_per_100K_7_day_count_change === undefined || d.cases_per_100K_7_day_count_change === '' || d.cases_per_100K_7_day_count_change == 'suppressed' || isNaN(d.cases_per_100K_7_day_count_change)) {
+                            newCases = 0
+                        }
+                        else {
+                            newCases = +d.cases_per_100K_7_day_count_change
+                            // console.log(d.cases_per_100K_7_day_count_change)
+                        }
+                        // if (isNaN(newCases)) {
+                        //     console.error("ERROR: found undefined at", d.fips_code)
+                        // }
+                        pairRateWithId[parseInt(d.fips_code)] += newCases; //TODO: change d.id to whatever it is in data.csv
+                        pairNameWithId[parseInt(d.fips_code)] = d.county_name;
+                        // if (pairRateWithId[d.fips_code] === undefined | isNaN(pairRateWithId[d.fips_code])) {
+                        //     console.error("ERROR: found undefined at", d.fips_code)
+                        // }
+                        // console.log(d.fips_code) //Debugging
+
+                        // Move the date from date2 to date1 (could implemnt a linked stack to an array)
+                        dates1[parseInt(d.fips_code)] = dates2[parseInt(d.fips_code)]
+                        // Pop the dates2 data
+                        dates2[parseInt(d.fips_code)] = ""
+                    }
+                    else {
+                        // go to next date
+                        dates2[parseInt(d.fips_code)] = ""
+                    }
+                }
+                // console.log(d)
+                // console.log(index)
                 
-                // console.log(d.cases_per_100K_7_day_count_change)
-                if (pairRateWithId[d.fips_code] === undefined |pairRateWithId[d.fips_code] === NaN) { // add another condidtion stating that this is the first iteration
-                    pairRateWithId[d.fips_code] = 0 // This makes sure NaNs arent produced using += newCases
-                }
-                if (d.cases_per_100K_7_day_count_change === undefined | d.cases_per_100K_7_day_count_change === 'suppressed' | d.cases_per_100K_7_day_count_change ===  NaN) {
-                    newCases = 0
-                }
-                else {
-                    newCases = +d.cases_per_100K_7_day_count_change
-                    // console.log(d.cases_per_100K_7_day_count_change)
-                }
-                pairRateWithId[d.fips_code] += newCases; //TODO: change d.id to whatever it is in data.csv
-                pairNameWithId[d.fips_code] = d.county_name;
-                if (pairRateWithId[d.fips_code] === undefined) {
-                    console.error("ERROR: found undefined at", d.fips_code)
-                }
-                // console.log(d.fips_code) //Debugging
             });
-            data.forEach(function(d) {
-                if (pairRateWithId[d.fips_code] === NaN | pairRateWithId[d.fips_code] === undefined){
-                    console.log(bad)
-                }
-            });
+
+            // pairRateWithId.forEach(function(i) {
+            //     pairRateWithId = pairRateWithId/100000
+            // });
+            console.log("pairratewithid1", pairRateWithId);
+
+            for (let i = 0; i < pairRateWithId.length; i++) {
+                pairRateWithId[i] = pairRateWithId[i]/100000
+                console.log(pairRateWithId[i])
+            }
+
+            console.log(pairRateWithId)
 
             // Debugging
             // data.forEach(function(d) {
@@ -83,7 +132,6 @@
             // 	// 	console.error("ERROR: found undefined at", d.fips_code)
             // 	// }
             // });
-            console.log("pairratewithid1", pairRateWithId);
 
             svg.append("g")
             .attr("class", "county")
