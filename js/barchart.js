@@ -258,8 +258,8 @@ d3v4.csv("data/data.csv", function(data) {
 
 
 
-function makeBarChart(){
-    var margin = {top: 20, right: 20, bottom: 70, left: 40},
+function makeHawaiiCsv(){
+    var margin = {top: 20, right: 20, bottom: 100, left: 40},
     width = 600 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
@@ -267,10 +267,12 @@ function makeBarChart(){
 
     var y = d3v4.scaleLinear().range([height, 0]);
 
+    var counties = ['Hawaii County', 'Honolulu County', 'Kalawao County',  'Kauai County' , 'Maui County']
+
     var xAxis = d3v5.svg.axis()
         .scale(x)
         .orient("bottom")
-        .tickFormat(5); // TODO: test
+        .tickFormat(counties); // TODO: test
 
     var yAxis = d3v5.svg.axis()
         .scale(y)
@@ -404,18 +406,28 @@ function makeBarChart(){
         const compactArray = Object.values(aggregated); // Remove sparsity
         console.log('CONDENSED', compactArray)
 
-        var transformed =  Object.assign.apply({}, counties.map( (v, i) => ( {[v]: compactArray[i]} ) ) ); // Combine counties and aggregated
+        var transformed = [];
+        
+        for(var j=0; j<compactArray.length; j++)  {
+            transformed[j] = {};              // creates a new object
+            transformed[j].name = counties[j];
+            transformed[j].cases = compactArray[j];    
+         }
+
+
+
+        // var transformed =  Object.assign.apply({}, counties.map( (v, i) => ( {[v]: compactArray[i]} ) ) ); // Combine counties and aggregated
 
         // aggregated.cases.forEach(function(d){
         //     console.log(d)
         // })
-        console.log('TRANSFORMED', transformed)
+        console.log('TRANSFORMED NAME', transformed[0])
         
         console.log('pass 2')
 
-        
-        x.domain(counties.map(function(d) { return d; }));
-        y.domain([0, d3v4.max(compactArray, function(d) { return d; })]);
+    d3v4.csv("data/hawaii.csv", function(hawaiiData) {
+        x.domain(hawaiiData.map(function(d) { return d.county; }));
+        y.domain([0, d3v4.max(hawaiiData, function(d) { return d.counts; })]);
 
         console.log('pass 3')
 
@@ -440,30 +452,96 @@ function makeBarChart(){
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("Number of Cases");
-        console.log('pass 5', transformed)
+
+        // var myJsonString = JSON.stringify(transformed);
+        console.log('pass 5')
 
         // transformed.forEach(function(d){
         //     console.log(d)
         // })
-
-
-        svg.selectAll("bar")
-            .data(transformed)
-            .enter()
-            .append("rect")
-            .style("fill",  "steelblue")
-            .attr("x", function(d) {
-                // console.log(d)
-                return x(d);
-            })
-            .attr("width", x.bandwidth())
-            .attr("y", function(d) {
-                return y(d);
-            })
-            .attr("height", function(d) {
-                return height - y(d);
-            });
+        // var hawaiiData = d3v4.csv("data/hawaii.csv"); //inject dataset
+        // console.log(hawaiiData)
+        
+            console.log( "test", hawaiiData)
+            svg.selectAll("bar")
+                .data(hawaiiData)
+                .enter()
+                .append("rect")
+                .style("fill",  "steelblue")
+                .attr("x", function(d) {
+                    console.log(d.county)
+                    return x(d.county);
+                })
+                .attr("width", x.bandwidth())
+                .attr("y", function(d) {
+                    return y(parseFloat(d.counts));
+                })
+                .attr("height", function(d) {
+                    return height - y(parseFloat(d.counts));
+                });
+        });
+        
         console.log('last')
 
     });
+}
+
+function makeBarChart(){
+    // set the dimensions and margins of the graph
+        var margin = {top: 20, right: 20, bottom: 50, left: 50},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+        // set the ranges
+        var x = d3v4.scaleBand()
+            .range([0, width])
+            .padding(0.2);
+        var y = d3v4.scaleLinear()
+            .range([height, 0]);
+            
+        // append the svg object to the body of the page
+        // append a 'group' element to 'svg'
+        // moves the 'group' element to the top left margin
+        var svg = d3v4.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", 
+            "translate(" + margin.left + "," + margin.top + ")");
+
+        // get the data
+        d3v4.csv("data/hawaii.csv", function(error, data) {
+            if (error) throw error;
+
+            // format the data
+            console.log(data)
+            data.forEach(function(d) {
+                d.counts = +d.counts;
+                // console.log(d.counts)
+            });
+
+            // Scale the range of the data in the domains
+            x.domain(data.map(function(d) { return d.county; }));
+            y.domain([0, d3v4.max(data, function(d) { return d.counts; })]);
+
+            // append the rectangles for the bar chart
+            svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.county); })
+            .attr("width", x.bandwidth())
+            .attr("y", function(d) { return y(d.counts); })
+            .attr("height", function(d) { return height - y(d.counts); });
+
+            // add the x Axis
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3v4.axisBottom(x));
+
+            // add the y Axis
+            svg.append("g")
+                .call(d3v4.axisLeft(y));
+
+        });
 }
