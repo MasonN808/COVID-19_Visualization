@@ -13,22 +13,22 @@
         var legend_labels = ["> .1", '.2', '.3', '.4', '.5', '.6', '.7', '.8', '.9+'];
         // var legend_labels = ["< 500", "500+", "1000+", "1500+", "2000+", "2500+", "3000+", "3500+", "4000+", "4500+", "5000+", "5500+", "6000+"];
 
-        var colorScale = d3.scale.threshold()
+        var colorScale = d3v3.scale.threshold()
             .domain(color_domain)
             // .range(['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#990000']);
             .range(['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#b30000', '#7f0000']);
             
-        var div = d3.select("#choroplethMap").append("div")
+        var div = d3v3.select("#choroplethMap").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
             
-        var svg = d3.select("#choroplethMap").append("svg")
+        var svg = d3v3.select("#choroplethMap").append("svg")
             .attr("width", width)
             .attr("height", height)
             .style("margin", "-15px auto");
 
-        // var path = d3.geo.path().projection(null);
-        var path = d3.geo.path();
+        // var path = d3v3.geo.path().projection(null);
+        var path = d3v3.geo.path();
 
         function ready(error, us, data) {
             if (error) throw error;
@@ -37,14 +37,14 @@
             var pairNameWithId = {};
 
             //Moves selction to front
-            d3.selection.prototype.moveToFront = function() {
+            d3v3.selection.prototype.moveToFront = function() {
                 return this.each(function(){
                 this.parentNode.appendChild(this);
                 });
             }; 
 
             //Moves selction to back
-            d3.selection.prototype.moveToBack = function() { 
+            d3v3.selection.prototype.moveToBack = function() { 
                 return this.each(function() { 
                 var firstChild = this.parentNode.firstChild; 
                 if (firstChild) { 
@@ -146,9 +146,9 @@
             })
             .style("opacity", 0.8)
             .on("mouseover", function(d) {
-                var sel = d3.select(this);
+                var sel = d3v3.select(this);
                 sel.moveToFront();
-                d3.select(this).transition().duration(300).style({'opacity': 1, 'stroke': 'black', 'stroke-width': 1.5});
+                d3v3.select(this).transition().duration(300).style({'opacity': 1, 'stroke': 'black', 'stroke-width': 1.5});
 
                 div.transition().duration(300)
                     .style("opacity", 1)
@@ -161,13 +161,13 @@
                     }
                     div.text(pairNameWithId[parseInt(d.id)] + ": " + numCases.toFixed(4))
 
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY -30) + "px");
+                    .style("left", (d3v3.event.pageX) + "px")
+                    .style("top", (d3v3.event.pageY -30) + "px");
             })
             .on("mouseout", function() {
-                var sel = d3.select(this);
+                var sel = d3v3.select(this);
                 sel.moveToBack();
-                d3.select(this)
+                d3v3.select(this)
                 .transition().duration(300)
                 .style({'opacity': 0.8, 'stroke': 'white', 'stroke-width': 1});
                 div.transition().duration(300)
@@ -219,7 +219,7 @@
             .attr("transform","translate(850, -390)");
 
         queue()
-            .defer(d3.json, "data/counties-10m.json")
-            .defer(d3.csv, "data/data.csv")
+            .defer(d3v3.json, "data/counties-10m.json")
+            .defer(d3v3.csv, "data/data.csv")
             .await(ready);
     }
